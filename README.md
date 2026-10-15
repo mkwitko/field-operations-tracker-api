@@ -16,13 +16,65 @@ Backend for a mobile and web app that records ritual-supply data (sessions, plan
 
 ## Architecture
 
+System context: this repo is the single backend for the web and mobile clients.
+
 ```mermaid
 flowchart LR
-  Client[Mobile / web clients] -->|REST + cookies| API[Fastify API]
-  API --> MW[auth + access-gate + permission middlewares]
-  MW --> Ctl[controllers] --> Mdl[models] --> DB[(PostgreSQL via Prisma)]
-  API --> Cognito{{AWS Cognito}}
-  API --> Google{{Google OAuth / Sheets}}
+  Web[accounting-management-web] -->|REST + cookies| API[accounting-management-api<br/>Fastify + Prisma]
+  App[accounting-management-app<br/>mobile] -->|REST + cookies| API
+  API --> DB[(PostgreSQL)]
+  API --> Cognito{{AWS Cognito<br/>identity and claims}}
+  API --> Google{{Google OAuth + Sheets}}
+```
+
+Layers inside this repo:
+
+```mermaid
+flowchart TD
+  Routes["Routes<br/>src/routes"] --> MW["Middlewares: authentication, access gate, permission<br/>src/middlewares"]
+  MW --> Ctl["Controllers<br/>src/api/v1/controllers"]
+  Ctl --> Svc["Services: authentication, authorization, google-oauth<br/>src/api/v1/services"]
+  Ctl --> Mdl["Models (Prisma queries)<br/>src/api/v1/models"]
+  Svc --> Mdl
+  Svc --> Cognito{{Cognito SDK}}
+  Mdl --> DB[(PostgreSQL)]
+  Svc --> Rules["Role to scope rules<br/>src/api/v1/constants/cargos.ts"]
+```
+
+Sign-in and access derivation (`src/api/v1/services/authentication`, `authorization/derive-access.ts`):
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant A as API
+  participant G as Cognito
+  participant D as PostgreSQL
+  C->>A: sign-in (credentials)
+  A->>G: authenticate, read claims (role, grade)
+  A->>A: deriveAccess: can access? which permissions?
+  A->>D: provision user, nucleus, region, permissions
+  A-->>C: JWT in HTTP-only cookies
+  C->>A: any /sessoes, /preparos, ... request
+  A->>A: authentication middleware, access gate, permission check
+  A->>D: query scoped to own nucleus or region
+```
+
+Data model summary (`prisma/schema.prisma`, 12 models; main entities only; names are Portuguese in code: Sessoes = sessions, Vegetal/Chacrona/Lenha = plant material, Preparos = preparations):
+
+```mermaid
+erDiagram
+  Regioes ||--o{ Nucleos : groups
+  Nucleos ||--o{ Usuarios : "has members"
+  Nucleos ||--o{ Sessoes : holds
+  Nucleos ||--o{ Vegetal : stocks
+  Nucleos ||--o{ Preparos : makes
+  Sessoes ||--o{ SessaoVegetal : uses
+  Vegetal ||--o{ SessaoVegetal : "used in"
+  Preparos }o--o| Mariri : from
+  Preparos }o--o| Chacrona : from
+  Preparos }o--o| Lenha : from
+  Usuarios ||--o| GoogleTokens : links
+  Usuarios ||--o{ Permissoes : granted
 ```
 
 - Routes live in `src/routes`, handlers in `src/api/v1/controllers`, data access in `src/api/v1/models`, business rules in `src/api/v1/services`.

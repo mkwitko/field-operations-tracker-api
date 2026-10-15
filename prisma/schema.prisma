@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuarios {
+  id           String    @id @default(cuid())
+  nome         String
+  cpf          String?   @unique
+  senha        String?
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+  deletadoEm   DateTime?
+  deletado     Boolean   @default(false)
+  email        String?   @unique
+  ativo        Boolean   @default(true)
+
+  cargoNome    String?
+  cargoCodigo  String?
+  cargos       String?
+  grau         String?
+  bypass       Boolean   @default(false)
+
+  // Integrações (planilhas/serviços) é opcional por usuário.
+  integracoesAtivo Boolean @default(false)
+
+  nucleo   Nucleos? @relation(fields: [nucleoId], references: [id])
+  nucleoId String?
+
+  permissoes   Permissoes[]
+  googleTokens GoogleTokens?
+
+  @@map("usuarios")
+}
+
+model GoogleTokens {
+  id           String   @id @default(cuid())
+  sessionId    String   @unique
+  accessToken  String   @db.Text
+  refreshToken String   @db.Text
+  expiryDate   DateTime
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  usuario   Usuarios @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId String @unique
+
+  @@index([sessionId])
+  @@index([usuarioId])
+  @@index([expiryDate])
+  @@map("google_tokens")
+}
+
+model Nucleos {
+  id           String     @id @default(cuid())
+  nome         String
+  criadoEm     DateTime   @default(now())
+  atualizadoEm DateTime   @updatedAt
+  deletadoEm   DateTime?
+  deletado     Boolean    @default(false)
+  usuarios     Usuarios[]
+
+  // Controle de estoque é opcional por núcleo (default desligado).
+  estoqueAtivo Boolean @default(false)
+
+  preparos  Preparos[]
+  sessoes   Sessoes[]
+  vegetais  Vegetal[]
+  regioes   Regioes?   @relation(fields: [regioesId], references: [id])
+  regioesId String?
+
+  @@map("nucleos")
+}
+
+model Regioes {
+  id   String @id @default(cuid())
+  nome String
+
+  nucleos Nucleos[]
+
+  @@map("regioes")
+}
+
+model Sessoes {
+  id                String   @id @default(cuid())
+  descricao         String?
+  sessao            String
+  pessoas           String
+  data              String
+  quantidadeVegetal String
+  Nucleos           Nucleos? @relation(fields: [nucleosId], references: [id])
+  nucleosId         String?
+
+  vegetais SessaoVegetal[]
+}
+
+/// Estoque de vegetal por núcleo. Dois saldos separados: estoque e geladeira.
+model Vegetal {
+  id String @id @default(cuid())
+
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+  deletadoEm   DateTime?
+  deletado     Boolean   @default(false)
+
+  nome          String
+  tipo          String // caupuri | tucunaca | caupuri_tucunaca
+  dataPreparo   String
+  mestrePreparo String
+  observacoes   String?
+
+  litrosEstoque   String @default("0")
+  litrosGeladeira String @default("0")
+
+  Nucleos   Nucleos? @relation(fields: [nucleosId], references: [id])
+  nucleosId String?
+
+  consumos SessaoVegetal[]
+
+  @@map("vegetal")
+}
+
+/// Consumo de um vegetal em uma sessão (uma sessão pode usar vários vegetais).
+model SessaoVegetal {
+  id         String @id @default(cuid())
+  quantidade String // litros consumidos
+  local      String // estoque | geladeira
+
+  filtrado         String  @default("0") // litros filtrados (retirados do estoque)
+  descontouEstoque Boolean @default(true) // se o filtrado foi descontado do estoque
+  saldoGeladeira   Boolean @default(false) // se a diff (filtrado - consumido) foi p/ geladeira
+
+  sessao   Sessoes @relation(fields: [sessaoId], references: [id], onDelete: Cascade)
+  sessaoId String
+
+  vegetal   Vegetal @relation(fields: [vegetalId], references: [id])
+  vegetalId String
+
+  @@index([sessaoId])
+  @@index([vegetalId])
+  @@map("sessao_vegetal")
+}
+
+model Preparos {
+  id String @id @default(cuid())
+
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+  deletadoEm   DateTime?
+  deletado     Boolean   @default(false)
+
+  inicio         DateTime
+  fim            DateTime
+  producaoLitros String
+
+  mariri   Mariri? @relation(fields: [maririId], references: [id])
+  maririId String?
+
+  chacrona   Chacrona? @relation(fields: [chacronaId], references: [id])
+  chacronaId String?
+
+  lenha     Lenha?   @relation(fields: [lenhaId], references: [id])
+  lenhaId   String?
+  Nucleos   Nucleos? @relation(fields: [nucleosId], references: [id])
+  nucleosId String?
+
+  @@map("preparos")
+}
+
+model Mariri {
+  id String @id @default(cuid())
+
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+  deletadoEm   DateTime?
+  deletado     Boolean   @default(false)
+
+  pesoKg         String
+  unidades       String
+  tipo           String
+  tipoPlantacao  String
+  origemMensagem String
+  Preparos       Preparos[]
+
+  @@map("mariri")
+}
+
+model Chacrona {
+  id String @id @default(cuid())
+
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+  deletadoEm   DateTime?
+  deletado     Boolean   @default(false)
+
+  pesoKg         String
+  unidades       String
+  tipoPlantacao  String
+  origemMensagem String
+  Preparos       Preparos[]
+
+  @@map("chacrona")
+}
+
+model Lenha {
+  id String @id @default(cuid())
+
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+  deletadoEm   DateTime?
+  deletado     Boolean   @default(false)
+
+  quantidadeM2       String
+  tempoFornalhaAcesa String
+  tipoLenha          String
+  tipoFornalha       String
+  Preparos           Preparos[]
+
+  @@map("lenha")
+}
+
+model Permissoes {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String?
+  usuarios    Usuarios[]
+
+  @@map("permissoes")
+}

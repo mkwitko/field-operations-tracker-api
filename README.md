@@ -1,4 +1,4 @@
-# UDV Sustentabilidade API
+# Accounting Management API
 
 Backend for a mobile and web app that records ritual-supply data (sessions, plant material, preparations) per local nucleus and region, with role-based visibility driven by an external identity provider.
 
@@ -81,8 +81,8 @@ docs/          design specs and plans
 
 ## Related repositories
 
-- [udv-sus-web](https://github.com/mkwitko/udv-sus-web): web client
-- [udv-sus-mobile](https://github.com/mkwitko/udv-sus-mobile): mobile client
+- [accounting-management-web](https://github.com/mkwitko/accounting-management-web): web client
+- [accounting-management-app](https://github.com/mkwitko/accounting-management-app): mobile client
 
 ## License
 

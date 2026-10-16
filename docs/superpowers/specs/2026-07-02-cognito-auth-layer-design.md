@@ -1,7 +1,7 @@
 # Camada de autenticação Cognito + cargos
 
 Data: 2026-07-02
-Escopo: `udv-sus-back` (principal), `udv-sus-web` (remoção da criação de usuário + regen de tipos). `udv-sus-app` sem mudanças.
+Escopo: `field-operations-tracker-api` (principal), `field-operations-tracker-web` (remoção da criação de usuário + regen de tipos). `field-operations-tracker-app` sem mudanças.
 
 ## Objetivo
 
@@ -49,7 +49,7 @@ Claims lidos do IdToken do Cognito:
 
 ## Componentes
 
-### Backend (`udv-sus-back`)
+### Backend (`field-operations-tracker-api`)
 
 1. **`.env`** — adicionar:
    ```
@@ -101,7 +101,7 @@ Claims lidos do IdToken do Cognito:
 
 10. Controller `authenticate.ts` — **sem mudança** (ainda emite o nosso JWT com `userId`).
 
-### Web (`udv-sus-web`)
+### Web (`field-operations-tracker-web`)
 
 11. **Remover criação de usuário**:
     - `pages/usuarios.tsx`: remover botão "Novo usuário" (e `canManage` → navigate `/usuarios/novo`).
@@ -110,7 +110,7 @@ Claims lidos do IdToken do Cognito:
 
 12. **Regen de tipos**: `yarn generate:api` (orval, backend rodando) → `FindMe201` ganha `cargoNome`, `cargoCodigo`, `cargos`.
 
-### App mobile (`udv-sus-app`)
+### App mobile (`field-operations-tracker-app`)
 
 Sem mudanças. Usa o mesmo `/sign/in` + `/find/me`; os cargos fluem no payload de `/find/me`. Sem config Cognito (backend orquestra).
 

@@ -1,6 +1,6 @@
-# Accounting Management API
+# Field Operations Tracker API
 
-Backend for a mobile and web app that records ritual-supply data (sessions, plant material, preparations) per local nucleus and region, with role-based visibility driven by an external identity provider.
+Backend for a mobile and web app that records field data (sessions, plant material stock, preparations) per local unit (nucleus) and region, with role-based visibility driven by an external identity provider.
 
 **Status:** deployed for a private client; source kept private. The repository is a snapshot of ongoing work and is not presented as a product with public users.
 
@@ -9,7 +9,7 @@ Backend for a mobile and web app that records ritual-supply data (sessions, plan
 - Sign-in against AWS Cognito, with local sign-up and a pending-access state for users without a qualifying role (`src/api/v1/services/authentication`).
 - Access gate and permission derivation from Cognito claims (role, grade, bypass list): `src/api/v1/services/authorization`, `src/middlewares`.
 - Nucleus and region provisioning from the token on login, scoped data visibility (own nucleus vs regional).
-- CRUD and listing for sessions, plant material (vegetal, chacrona, lenha), preparations and "mariri" records.
+- CRUD and listing for sessions, plant material (vegetal, chacrona, lenha, mariri), preparations.
 - Google OAuth and Google Sheets integration for spreadsheet import/export (`src/routes/oauth-route.ts`, `sheets-route.ts`).
 - JWT in HTTP-only cookies with refresh, rate limiting, Swagger UI.
 - Health probe at `/health`.
@@ -20,8 +20,8 @@ System context: this repo is the single backend for the web and mobile clients.
 
 ```mermaid
 flowchart LR
-  Web[accounting-management-web] -->|REST + cookies| API[accounting-management-api<br/>Fastify + Prisma]
-  App[accounting-management-app<br/>mobile] -->|REST + cookies| API
+  Web[field-operations-tracker-web] -->|REST + cookies| API[field-operations-tracker-api<br/>Fastify + Prisma]
+  App[field-operations-tracker-app<br/>mobile] -->|REST + cookies| API
   API --> DB[(PostgreSQL)]
   API --> Cognito{{AWS Cognito<br/>identity and claims}}
   API --> Google{{Google OAuth + Sheets}}
@@ -133,8 +133,8 @@ docs/          design specs and plans
 
 ## Related repositories
 
-- [accounting-management-web](https://github.com/mkwitko/accounting-management-web): web client
-- [accounting-management-app](https://github.com/mkwitko/accounting-management-app): mobile client
+- [field-operations-tracker-web](https://github.com/mkwitko/field-operations-tracker-web): web client
+- [field-operations-tracker-app](https://github.com/mkwitko/field-operations-tracker-app): mobile client
 
 ## License
 

@@ -67,7 +67,7 @@ app.register(fastifyRateLimit, {
 app.register(fastifyCors, {
   origin:
     env.ENVIRONMENT === "production"
-      ? ["https://plantio-udv.web.app", "http://localhost:8091"]
+      ? ["https://tracker.example.com", "http://localhost:8091"]
       : "http://localhost:8091", // Change this to your front-end origin
   credentials: true, // This allows cookies to be sent
 });
@@ -76,7 +76,7 @@ app.register(fastifyCors, {
 app.register(fastifySwagger, {
   openapi: {
     info: {
-      title: "Udv Plantio",
+      title: "Field Operations Tracker API",
       version: "1.0.0",
     },
     components: {

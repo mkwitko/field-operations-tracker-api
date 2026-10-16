@@ -2,7 +2,7 @@
 
 Data: 2026-07-02
 Depende de: `2026-07-02-cognito-auth-layer-design.md` (camada Cognito já implementada).
-Escopo: `udv-sus-back` (principal), `udv-sus-web` (remover gestão manual + regen), `udv-sus-app` (gate de acesso + regen).
+Escopo: `field-operations-tracker-api` (principal), `field-operations-tracker-web` (remover gestão manual + regen), `field-operations-tracker-app` (gate de acesso + regen).
 
 ## Objetivo
 
@@ -101,7 +101,7 @@ permissoes  = ESCOPO_PERMISSOES[maiorEscopo]
 
 ## Componentes
 
-### Backend (`udv-sus-back`)
+### Backend (`field-operations-tracker-api`)
 
 1. **`.env` + `env/index.ts`** — `BYPASS_EMAILS` (lista separada por vírgula).
 
@@ -141,7 +141,7 @@ permissoes  = ESCOPO_PERMISSOES[maiorEscopo]
    - Ajustar `routes/*` e `permission-middleware` usages órfãos.
    - `userResponse` não pode mais viver em `create-user.ts` (removido) → mover.
 
-### Web (`udv-sus-web`)
+### Web (`field-operations-tracker-web`)
 
 10. **Remover telas de gestão**:
     - Páginas `usuario-form`, `nucleo-form`, `regiao-form` e rotas `/novo` e `/:id` correspondentes.
@@ -149,7 +149,7 @@ permissoes  = ESCOPO_PERMISSOES[maiorEscopo]
     - `PANEL_ACCESS_PERMISSIONS` / `protected-route`: revisar — sem `CRIAR_*`, acesso ao painel passa a exigir `ADMINISTRADOR` ou `VER_REGIOES` (leitura). **(assunção — confirmar)**
 11. **Regen** `yarn generate:api`.
 
-### App mobile (`udv-sus-app`)
+### App mobile (`field-operations-tracker-app`)
 
 12. **Gate de acesso**: o login já é rejeitado no backend (403) para quem não tem acesso, então o app só precisa tratar o erro na tela de signin (mensagem "Sem acesso ao aplicativo"). Sem tela extra.
 13. **Regen** orval (para tipos `grau`, `bypass`, `cargos`).

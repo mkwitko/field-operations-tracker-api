@@ -23,7 +23,7 @@
     "uuid": "^11.0.3",
     "zod": "^3.23.8"
   },
-  "name": "udv-sustentabilidade-back",
+  "name": "field-operations-tracker-api",
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {

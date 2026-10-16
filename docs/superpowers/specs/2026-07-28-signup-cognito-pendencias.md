@@ -2,7 +2,7 @@
 
 Data: 2026-07-28
 Complementa: `2026-07-28-signup-cognito-design.md`
-Branch: `feat/signup-cognito` (repos `udv-sus-back` e `udv-sus-app`)
+Branch: `feat/signup-cognito` (repos `field-operations-tracker-api` e `field-operations-tracker-app`)
 
 ## Correção do spec
 

@@ -1,7 +1,7 @@
 # Signup com escolha de núcleo e acesso pendente
 
 Data: 2026-07-28
-Repos afetados: `udv-sus-back`, `udv-sus-app`
+Repos afetados: `field-operations-tracker-api`, `field-operations-tracker-app`
 
 ## Problema
 

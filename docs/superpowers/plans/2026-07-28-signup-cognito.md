@@ -1300,12 +1300,12 @@ git commit -m "feat: confirmacao de email e rate limit nas rotas publicas"
 
 ### Task 7: Tela de signup no app
 
-A partir daqui o trabalho é em `udv-sus-app` (repositório separado; commits vão para lá).
+A partir daqui o trabalho é em `field-operations-tracker-app` (repositório separado; commits vão para lá).
 
 **Files:**
-- Create: `udv-sus-app/app/public/signup/index.tsx`
-- Create: `udv-sus-app/src/schemas/sign-up-form-schema.ts`
-- Regenerate: `udv-sus-app/src/http/generated/**` (orval)
+- Create: `field-operations-tracker-app/app/public/signup/index.tsx`
+- Create: `field-operations-tracker-app/src/schemas/sign-up-form-schema.ts`
+- Regenerate: `field-operations-tracker-app/src/http/generated/**` (orval)
 
 **Interfaces:**
 - Consumes: `useSignUp`, `useGetPublicNucleos` (gerados pelo orval a partir das Tasks 3 e 5); `CustomPicker` de `@/src/components/custom-picker` — props `{ selectedValue: string; onValueChange: (v: string) => void; options: { label: string; value: string }[]; placeholder?: string; disabled?: boolean }`; `Input` de `@/src/components/ui/input`; `SecureInput` de `@/src/components/ui/secure-input`.
@@ -1313,7 +1313,7 @@ A partir daqui o trabalho é em `udv-sus-app` (repositório separado; commits v�
 
 - [ ] **Step 1: Gerar o cliente HTTP**
 
-Com o back rodando (`npm run dev` no `udv-sus-back`), no `udv-sus-app`:
+Com o back rodando (`npm run dev` no `field-operations-tracker-api`), no `field-operations-tracker-app`:
 
 Run: `npx orval`
 Expected: `src/http/generated/authentication/authentication.ts` passa a exportar `useSignUp`, `useConfirmSignUp` e `useResendConfirmation`; `src/http/generated/nucleos/nucleos.ts` passa a exportar `useGetPublicNucleos`.
@@ -1662,8 +1662,8 @@ git commit -m "feat: tela de signup com escolha de nucleo"
 ### Task 8: Tela de confirmação de código e informativo no login
 
 **Files:**
-- Create: `udv-sus-app/app/public/confirm/index.tsx`
-- Modify: `udv-sus-app/app/public/signin/index.tsx` (informativo + link + tratamento do 403)
+- Create: `field-operations-tracker-app/app/public/confirm/index.tsx`
+- Modify: `field-operations-tracker-app/app/public/signin/index.tsx` (informativo + link + tratamento do 403)
 
 **Interfaces:**
 - Consumes: `useConfirmSignUp`, `useResendConfirmation` (orval, Task 6); rota `/public/signup` (Task 7); corpo `403 { code: "EMAIL_NAO_CONFIRMADO" }` de `POST /authentication/sign/in` (Task 2).
@@ -1876,8 +1876,8 @@ git commit -m "feat: confirmacao de email e informativo do Mural Digital no logi
 Fecha o fluxo: quem entrou sem cargo vai para uma tela dedicada em vez das tabs.
 
 **Files:**
-- Create: `udv-sus-app/app/authenticated/pending.tsx`
-- Modify: `udv-sus-app/src/context/auth-context.tsx` (`acessoPendente` + redirect)
+- Create: `field-operations-tracker-app/app/authenticated/pending.tsx`
+- Modify: `field-operations-tracker-app/src/context/auth-context.tsx` (`acessoPendente` + redirect)
 
 **Interfaces:**
 - Consumes: `acessoLiberado: boolean` do `/me` (Task 1), via `useFindMe` já usado no contexto.

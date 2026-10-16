@@ -25,7 +25,7 @@ vi.mock("@/env", () => {
       GOOGLE_CLIENT_ID: "google-client-id",
       GOOGLE_CLIENT_SECRET: "google-client-secret",
       REDIRECT_URI: "http://localhost:3333/oauth/callback",
-      EXPO_SCHEME: "udvplantio",
+      EXPO_SCHEME: "fieldopstracker",
       COGNITO_REGION: "us-east-1",
       COGNITO_USER_POOL_ID: "pool",
       COGNITO_USER_POOL_CLIENT_ID: "client",
